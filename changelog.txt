@@ -1,8 +1,9 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.0.0
-Date: 23. 1. 2020
+Version: 2.0.1
+Date: 24. 1. 2020
   Bugfixes:
     - Fixed that clicking on a non-vehicle, non-vehicle-wagon entity would not unload a vehicle nearby.
+    - Fixed crash when unloading at certain angles on the track.
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.0
 Date: 23. 1. 2020
