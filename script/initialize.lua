@@ -15,26 +15,32 @@
 
 -- Go through all the available prototypes and assign them to a valid loaded wagon or "nope"
 local function makeGlobalMaps()
+
+  -- Need to check max weight as we go through
+  local useWeights = settings.startup["vehicle-wagon-use-custom-weights"].value
+  local maxWeight = (useWeights and settings.startup["vehicle-wagon-maximum-weight"].value) or math.huge
   
   -- Some sprites show up backwards from how they ought to, so we flip the wagons relative to the vehicles.
   global.loadedWagonFlip = {}  --: loaded-wagon-name --> boolean
   
   global.vehicleMap = {}  --: vehicle-name --> loaded-wagon-name
-  for k,_ in pairs(game.get_filtered_entity_prototypes({{filter="type", type="car"}})) do
+  for k,p in pairs(game.get_filtered_entity_prototypes({{filter="type", type="car"}})) do
     
-    if String.contains(k,"nixie") then
+    if k and string.find(k,"nixie") ~= nil then
       global.vehicleMap[k] = nil  -- non vehicle entity
     elseif k == "uplink-station" then
       global.vehicleMap[k] = nil  -- non vehicle entity
-    elseif String.contains(k,"heli") or String.contains(k,"rotor") then
+    elseif k and (string.find(k,"heli") ~= nil or string.find(k,"rotor") ~= nil) then
       global.vehicleMap[k] = nil  -- helicopter & heli parts incompatible
     elseif k == "vwtransportercargo" then
       global.vehicleMap[k] = nil  -- non vehicle or incompatible?
-    elseif String.contains(k,"airborne") then
-      global.vehicleMap[k] = nil  -- can't load flying planes
-    elseif String.contains(k,"Schall%-tank%-SH") then
-      global.vehicleMap[k] = nil  -- Super Heavy tank doesn't fit on train
-    elseif String.contains(k,"cargo%-plane") then
+    elseif k and string.find(k,"airborne") ~= nil then
+      global.vehicleMap[k] = nil  -- can't load flying planes [Aircraft Realism compatibility]
+    elseif p.weight > maxWeight then
+      global.vehicleMap[k] = nil  -- This vehicle is too heavy
+    elseif k and string.find(k,"Schall%-tank%-SH") ~= nil then
+      global.vehicleMap[k] = "loaded-vehicle-wagon-tank-SH"  -- Schall's Super Heavy Tank
+    elseif k and string.find(k,"cargo%-plane") ~= nil then
       global.vehicleMap[k] = "loaded-vehicle-wagon-cargoplane"  -- Cargo plane, Better cargo plane, Even better cargo plane
       global.loadedWagonFlip["loaded-vehicle-wagon-cargoplane"] = true  -- Cargo plane wagon sprite is flipped
     elseif k == "jet" then
@@ -45,11 +51,17 @@ local function makeGlobalMaps()
       global.loadedWagonFlip["loaded-vehicle-wagon-gunship"] = true  -- Gunship wagon sprite is flipped
     elseif k == "dumper-truck" then
       global.vehicleMap[k] = "loaded-vehicle-wagon-truck"  -- Specific to dump truck mod
-    elseif String.contains(k,"Schall%-ht%-RA") then
+    elseif k and string.find(k,"Schall%-ht%-RA") ~= nil then
       global.vehicleMap[k] = "loaded-vehicle-wagon-tank"  -- Schall's Rocket Artillery look like tanks
-    elseif String.contains(k,"tank") then
+    elseif k and string.find(k,"Schall%-tank%-L") ~= nil then
+      global.vehicleMap[k] = "loaded-vehicle-wagon-tank-L"  -- Schall's Light Tank
+    elseif k and string.find(k,"Schall%-tank%-H") ~= nil then
+      global.vehicleMap[k] = "loaded-vehicle-wagon-tank-H"  -- Schall's Heavy Tank
+    elseif k == "kr-advanced-tank" then
+      global.vehicleMap[k] = "loaded-vehicle-wagon-kr-advanced-tank"  -- Krastorio2 Advanced Tank  
+    elseif k and string.find(k,"tank") ~= nil then
       global.vehicleMap[k] = "loaded-vehicle-wagon-tank"  -- Generic tank
-    elseif String.contains(k,"car") and not String.contains(k,"cargo") then
+    elseif k and string.find(k,"car") ~= nil and string.find(k,"cargo") == nil then
       global.vehicleMap[k] = "loaded-vehicle-wagon-car"  -- Generic car (that is not cargo)
     else
       global.vehicleMap[k] = "loaded-vehicle-wagon-tarp"  -- Default for everything else
@@ -124,6 +136,7 @@ local function Migrate_1_x_x()
       local player = game.get_player(player_index)
       if player then
         player.clear_gui_arrow()
+        clearVisuals(player)
       end
     end
     global.vehicle_data = nil  -- No longer used
@@ -291,7 +304,7 @@ local function makeGlobalTables()
   
 end
 
--- Runs when new game starts (we also call it when mods are changed)
+-- Runs when new game starts
 function OnInit()
   -- Generate wagon-vehicle mapping tables 
   makeGlobalMaps()
@@ -305,7 +318,7 @@ function OnConfigurationChanged(data)
   -- Regenerate maps before migrating
   makeGlobalMaps()
 
-  -- Migrate existing data if any
+  -- Migrate existing data if any exists
   if data and data.mod_changes["VehicleWagon2"] then
     -- format version string to "00.00.00"
     local oldVersion, newVersion = nil
@@ -321,6 +334,45 @@ function OnConfigurationChanged(data)
     -- If there was an older version installed, migrate the global data tables
     if oldVersion and oldVersion < "02.00.00" then
       Migrate_1_x_x()
+    end
+    
+    -- Remove all player arrows, now we use drawn circles
+    for _,player in pairs(game.players) do
+      player.clear_gui_arrow()
+    end
+  end
+  
+  -- Run when any mod or mod setting changes:
+  -- Scrub wagon_data for invalid references and convert last_user to player_index
+  local loaded_wagons = {}
+  for _,surface in pairs(game.surfaces) do
+    local wagons = surface.find_entities_filtered{name = global.loadedWagonList}
+    for _,wagon in pairs(wagons) do
+      loaded_wagons[wagon.unit_number] = wagon
+    end
+  end
+  if global.wagon_data then
+    local missing_prototypes = false
+    for id,data in pairs(global.wagon_data) do
+      if not loaded_wagons[id] then
+        game.print({"vehicle-wagon2.migrate-prototype-error",id,data.name})
+        missing_prototypes = true
+        global.wagon_data[id] = nil
+      else
+        -- Migrate last_user to player_index
+        if data.last_user and type(data.last_user) ~= "number" then
+          data.last_user = data.last_user.index
+        end
+        -- Add alt-mode icons
+        if not data.icon then
+          renderIcon(loaded_wagons[id], data.name)
+          data.icon = true
+        end
+      end
+    end
+    -- Give error message for missing prototypes
+    if missing_prototypes then
+      game.print({"vehicle-wagon2.migrate-prototype-warning"})
     end
   end
   

@@ -21,20 +21,68 @@ data:extend({
   },
   {
     type = "double-setting",
+    name = "vehicle-wagon-maximum-weight",
+    order = "baa",
+    setting_type = "startup",
+    default_value = 75000,
+    minimum_value = 1000,
+    maximum_value = math.huge
+  },
+  {
+    type = "double-setting",
     name = "vehicle-wagon-empty-weight-factor",
     order = "bb",
     setting_type = "startup",
-    default_value = 0.5,
-    min_value = 0.1,
-    max_value = 2.0
+    default_value = 0.25,
+    minimum_value = 0.1,
+    maximum_value = 2.0
   },
   {
     type = "double-setting",
     name = "vehicle-wagon-vehicle-weight-factor",
     order = "bc",
     setting_type = "startup",
-    default_value = 0.3,
-    min_value = 0.01,
-    max_value = 1.0
+    default_value = 1.0,
+    minimum_value = 0,
+    maximum_value = 5.0
+  },
+  {
+    type = "double-setting",
+    name = "vehicle-wagon-braking-factor",
+    order = "bd",
+    setting_type = "startup",
+    default_value = 2.0,
+    minimum_value = 0.5,
+    maximum_value = 5.0
+  },
+  {
+    type = "double-setting",
+    name = "vehicle-wagon-empty-friction-factor",
+    order = "be",
+    setting_type = "startup",
+    default_value = 0.25,
+    minimum_value = 0.1,
+    maximum_value = 5.0
+  },
+  {
+    type = "double-setting",
+    name = "vehicle-wagon-loaded-friction-factor",
+    order = "bf",
+    setting_type = "startup",
+    default_value = 1.5,
+    minimum_value = 0.1,
+    maximum_value = 5.0
   },
 })
+
+if mods["GCKI"] then
+  data:extend({
+    {
+    type = "bool-setting",
+    name = "vehicle-wagon-use-GCKI-permissions",
+    order = "cc",
+    setting_type = "runtime-global",
+    default_value = "true"
+    },
+  })
+end

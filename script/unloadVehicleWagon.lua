@@ -18,6 +18,7 @@ function unloadVehicleWagon(action)
   -- Get data from this unloading request
   local player_index = action.player_index
   local unload_position = action.unload_position
+  local unload_orientation = action.unload_orientation
   local loaded_wagon = action.wagon
   local player = nil
   local replace_wagon = action.replace_wagon
@@ -78,24 +79,49 @@ function unloadVehicleWagon(action)
     force = player.force
   end
   
-  -- Place vehicle with same direction as the loaded wagon sprite.
-  local direction = math.floor(loaded_wagon.orientation*8 + 0.5)
-  if global.loadedWagonFlip[loaded_wagon.name] then
-    direction = direction + 4
+  -- Validate the orientation setting and convert to approximate direction for create_entity
+  if not unload_orientation then
+    -- Place vehicle with same direction as the loaded wagon sprite by default.
+    unload_orientation = loaded_wagon.orientation
+    if global.loadedWagonFlip[loaded_wagon.name] then
+      unload_orientation = unload_orientation + 0.5
+    end
   end
+  unload_orientation = math.fmod(unload_orientation, 1)
+  if unload_orientation < 0 then
+    unload_orientation = unload_orientation + 1
+  end
+  local direction = math.floor(unload_orientation*8 + 0.5)
   direction = math.fmod(direction, 8)
+  
   
   -- Create the vehicle
   local vehicle = surface.create_entity{
                       name = wagon_data.name, 
                       position = unload_position, 
                       force = force,
-                      direction = direction
+                      direction = direction,
+                      raise_built = false
                     }
   
   -- If vehicle not created, give up
   if not vehicle then
     return
+  end
+  
+  -- Set the orientation (this is where we can use the original floating point value
+  vehicle.orientation = unload_orientation
+  
+  -- Set vehicle user to the player who unloaded, or the saved last user if unloaded automatically
+  if not player_index and wagon_data.last_user then
+    if type(wagon_data.last_user) == "number" then
+      player_index = wagon_data.last_user
+    else
+      player_index = wagon_data.last_user.index
+    end
+  end
+  if player_index and game.players[player_index] then
+    vehicle.last_user = game.players[player_index]
   end
   
   -- Restore vehicle parameters from global data
@@ -119,7 +145,7 @@ function unloadVehicleWagon(action)
   
   -- Restore ammo inventory if this car has guns
   if vehicle.selected_gun_index then
-    ammoInventory = vehicle.get_inventory(defines.inventory.car_ammo)
+    local ammoInventory = vehicle.get_inventory(defines.inventory.car_ammo)
     local r2 = saveRestoreLib.insertInventoryStacks(ammoInventory, wagon_data.items.ammo)
     r1 = saveRestoreLib.mergeStackLists(r1, r2)
   else
@@ -127,7 +153,7 @@ function unloadVehicleWagon(action)
   end
   
   -- Restore the cargo inventory
-  trunkInventory = vehicle.get_inventory(defines.inventory.car_trunk)
+  local trunkInventory = vehicle.get_inventory(defines.inventory.car_trunk)
   local r2 = saveRestoreLib.insertInventoryStacks(trunkInventory, wagon_data.items.trunk)
   r1 = saveRestoreLib.mergeStackLists(r1, r2)
   
@@ -137,8 +163,20 @@ function unloadVehicleWagon(action)
     saveRestoreLib.spillStacks(r2, surface, unload_position)
   end
   
+  -- Restore data for other mods
+  if remote.interfaces["autodrive"] and remote.interfaces["autodrive"].vehicle_restored then
+    if wagon_data.autodrive_data then
+      remote.call("autodrive", "vehicle_restored", vehicle, wagon_data.autodrive_data)
+    end
+  end
+  if remote.interfaces["GCKI"] and remote.interfaces["GCKI"].vehicle_restored then
+    if wagon_data.GCKI_data then
+      remote.call("GCKI", "vehicle_restored", vehicle, wagon_data.GCKI_data)
+    end
+  end
+  
   -- Raise event for scripts
-  script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = player_index})
+  script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = player_index, vehicle_unloaded=true})
   
   -- Play sound associated with creating the vehicle
   surface.play_sound({path = "utility/build_medium", position = unload_position, volume_modifier = 0.7})
