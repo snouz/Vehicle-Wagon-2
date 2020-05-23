@@ -1,4 +1,34 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.17.3
+Date: 2020-05-23
+  Features:
+    - Added (beta) compatibility with Gizmo's Cark Keys (Improved). Locked and claimed vehicles can only be loaded or unloaded by their owner.
+    - Added new scaled sprites for Schall Light Tank and Schall Heavy Tank, with matching wagon weights.
+    - Added startup settings to adjust braking and friction force of vehicle wagons.
+    - Added startup setting to control maximum weight of load-able vehicles.
+    - Added compability with Krastorio 2 Advanced Tank (beta graphics), if you change the Maximum Weight to more than 150000.
+    - Added alt-mode icons showing what vehicle is loaded in each wagon.
+    - Added custom boolean parameter "vehicle_loaded" to "script_raised_destroy" event when vehicle was loaded successfully.
+    - Added custom boolean parameter "vehicle_unloaded" to "script_raised_built" event when vehicle was unloaded successfully.
+    - Uploaded by robot256
+  Changes:
+    - Removed dependency on StdLib mod.
+    - Rebalanced wagon weights and stats so that vehicle weight is treated fairly.  Hauling tanks needs multiple locomotives now.
+    - Fixed compatibility with Train Overhaul so wagon speed is set to match the Nuclear Locomotive.
+    - Updated German locale with the many new strings, thanks to ST-DDT and Pi-C.
+    - Improved locale structure with cross-referencing.
+    - Improved behavior when players move or get in vehicles mid-loading.
+    - Changed selection indicator to an area highlight instead of giant arrows.
+    - Changed unloading zone to oblong shape surrounding wagon.
+    - Changed unloading behavior so that vehicles always point outwards, driving off the ramp.
+    - Changed loading beam graphics to a conveyor belt.
+  Bugfixes:
+    - Fixed compatibility with Mobile Factory mod by fixing how last_user and player_index are saved and restored.
+    - Fixed compatibility with Creative Mod by handling the case when magic robots with no inventory deconstruct a loaded wagon.
+    - Fixed minimum and maximum parameters on weight scaling startup settings.
+    - Moved final weight calculations to data-final-fixes so that they are consistent with the final wagon and vehicle weights set by other mods.
+    - Added mininum distance based on vehicle size to avoid accidentally destroying the wago when unloading.
+---------------------------------------------------------------------------------------------------
 Version: 2.0.1
 Date: 24. 1. 2020
   Bugfixes:
