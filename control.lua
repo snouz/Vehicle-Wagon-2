@@ -6,6 +6,7 @@
  *   - on_load
  *   - on_init
  *   - on_configuration_changed
+ *   - on_runtime_mod_setting_changed
  *   - on_tick (conditional)
  *   - on_pre_player_removed
  *   - on_player_used_capsule
@@ -43,6 +44,10 @@ script.on_init(OnInit)
 --== ON_CONFIGURATION_CHANGED ==--
 -- Initialize global data tables and perform migrations
 script.on_configuration_changed(OnConfigurationChanged)
+
+--== ON_RUNTIME_MOD_SETTING_CHANGED ==--
+-- Update loaded_wagon.minable properties when GCKI permission setting changes
+script.on_event(defines.events.on_runtime_mod_setting_changed, OnRuntimeModSettingChanged)
 
 
 --== ON_LOAD ==--
@@ -153,27 +158,36 @@ end
 --== ON_PRE_PLAYER_REMOVED EVENT ==--
 function onPrePlayerRemoved(event)
   player_index = event.player_index
-  for _,wagon in pairs(global.wagon_data) do
-    if wagon.GCKI_data then
-      if wagon.GCKI_data.owner and wagon.GCKI_data.owner == player_index then
+  
+  local unminable_enabled = game.active_mods["UnminableVehicles"] and settings.global["unminable_vehicles_make_unminable"].value
+  
+  for wagon_id,data in pairs(global.wagon_data) do
+    if data.GCKI_data then
+      if data.GCKI_data.owner and data.GCKI_data.owner == player_index then
         -- Owner was removed
-        wagon.GCKI_data.owner = nil
+        data.GCKI_data.owner = nil
       end
-      if wagon.GCKI_data.locker and wagon.GCKI_data.locker == player_index then
+      if data.GCKI_data.locker and data.GCKI_data.locker == player_index then
         -- Locker was removed
-        wagon.GCKI_data.locker = nil
+        data.GCKI_data.locker = nil
       end
-      if table_size(wagon.GCKI_data) == 0 then
-        wagon.GCKI_data = nil
+      
+      -- If UnminableVehicles is not enabled, update minable states.
+      if not unminable_enabled then
+        -- Make wagon minable when it belongs to no one
+        if not (data.GCKI_data.owner or data.GCKI_data.locker) and data.wagon and data.wagon.valid then
+          data.wagon.minable = true
+        end
+        -- Make vehicle minable when it is locked by no one
+        if not data.GCKI_data.locker then
+          data.minable = nil
+        end
       end
     end
-    if wagon.autodrive_data then
-      if wagon.autodrive_data.owner and wagon.autodrive_data.owner == player_index then
+    if data.autodrive_data then
+      if data.autodrive_data.owner and data.autodrive_data.owner == player_index then
         -- Owner was removed
-        wagon.autodrive_data.owner = nil
-      end
-      if table_size(wagon.autodrive_data) == 0 then
-        wagon.autodrive_data = nil
+        data.autodrive_data.owner = nil
       end
     end
   end
@@ -186,15 +200,25 @@ function release_owned_by_player(p)
   if type(p) ~= "number" then
     player_index = p.index
   end
-  for _,wagon in pairs(global.wagon_data) do
-    if wagon.GCKI_data then
-      if wagon.GCKI_data.owner and wagon.GCKI_data.owner == player_index then
+  
+  local unminable_enabled = game.active_mods["UnminableVehicles"] and settings.global["unminable_vehicles_make_unminable"].value
+  
+  for wagon_id,data in pairs(global.wagon_data) do
+    if data.GCKI_data then
+      if data.GCKI_data.owner and data.GCKI_data.owner == player_index then
         -- Owner was removed
-        wagon.GCKI_data.owner = nil
-      end
-      if table_size(wagon.GCKI_data) == 0 then
-        wagon.GCKI_data = nil  -- Clear the GCKI data when empty
-        wagon.wagon.minable = true  -- Make wagon minable when it belongs to no one
+        data.GCKI_data.owner = nil
+        -- If UnminableVehicles is not enabled, update minable states.
+        if not unminable_enabled then
+          -- Make wagon minable when it belongs to no one
+          if not (data.GCKI_data.owner or data.GCKI_data.locker) and data.wagon and data.wagon.valid then
+            data.wagon.minable = true
+          end
+          -- Make vehicle minable when it is locked by no one
+          if not data.GCKI_data.locker then
+            data.minable = nil
+          end
+        end
       end
     end
   end

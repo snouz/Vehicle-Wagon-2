@@ -1,4 +1,20 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.17.5
+Date: 2020-05-28
+  Features:
+    - Fixed Gizmo's Car Keys interface, so that it will actually work once Pi-C updates.
+    - Added compatibility with Unminable Vehicles.  "Make vehicles unminable" setting takes priority over Gizmo's Car Keys setting.
+  Changes:
+    - Moved migration code to migrations folder and cleaned them up significantly.
+    - Added migration step to convert double winches to single winches (only when upgrading from 1.2.x).
+  Bugfixes:
+    - Fixed that these vehicle flags would not be saved and restored: minable, destructible, operable, rotatable, enable_logistics_while_moving.
+    - Fixed that any mod changes would reset Vehicle Wagon tutorial states.
+    - Fixed missing dependency on Krastorio2 by moving modded wagons to data-updates. No more dependencies!
+    - Fixed that wagons would not always become minable again when GCKI ownership is released.
+    - Fixed that wagons would not become update minable state when GCKI mod was uninstalled or GCKI Permission setting changed.
+    - Fixed that vehicle color would not be reset if unloaded after GCKI ownership was released.
+---------------------------------------------------------------------------------------------------
 Version: 2.17.3
 Date: 2020-05-23
   Features:
@@ -13,9 +29,9 @@ Date: 2020-05-23
     - Uploaded by robot256
   Changes:
     - Removed dependency on StdLib mod.
-    - Rebalanced wagon weights and stats so that vehicle weight is treated fairly.  Hauling tanks needs multiple locomotives now.
+    - Rebalanced wagon weights and stats so that vehicle weight is treated fairly. Hauling tanks needs multiple locomotives now.
     - Fixed compatibility with Train Overhaul so wagon speed is set to match the Nuclear Locomotive.
-    - Updated German locale with the many new strings, thanks to ST-DDT and Pi-C.
+    - Updated German locale with the many new strings, thanks to ST-DDT and Pi-C (Work in Progress).
     - Improved locale structure with cross-referencing.
     - Improved behavior when players move or get in vehicles mid-loading.
     - Changed selection indicator to an area highlight instead of giant arrows.
