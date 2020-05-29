@@ -12,6 +12,7 @@
  *    - Loaded Vehicle Wagon (Cargo Plane)
  *    - Loaded Vehicle Wagon (Gunship)
  *    - Loaded Vehicle Wagon (Jet)
+ *    - Loading Ramp
 --]]
 
 
@@ -62,10 +63,7 @@ data:extend{
 				}
 			}
 		}
-	}
-}
-
-data:extend{
+	},
 	{
 		type = "item-with-entity-data",
 		name = "vehicle-wagon",
@@ -76,4 +74,14 @@ data:extend{
 		place_result = "vehicle-wagon",
 		stack_size = 5
 	},
+  {
+    type = "item",
+    name = "loading-ramp",
+    icon = "__VehicleWagon2__/graphics/tech-icon.png",
+    icon_size = 128,
+		subgroup = "transport",
+		order = "a[train-system]-v[vehicle-wagon-ramp]",
+		place_result = "loading-ramp",
+		stack_size = 10
+  },
 }
