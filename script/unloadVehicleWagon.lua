@@ -114,11 +114,7 @@ function unloadVehicleWagon(action)
   
   -- Set vehicle user to the player who unloaded, or the saved last user if unloaded automatically
   if not player_index and wagon_data.last_user then
-    if type(wagon_data.last_user) == "number" then
-      player_index = wagon_data.last_user
-    else
-      player_index = wagon_data.last_user.index
-    end
+    player_index = wagon_data.last_user
   end
   if player_index and game.players[player_index] then
     vehicle.last_user = game.players[player_index]
@@ -131,7 +127,7 @@ function unloadVehicleWagon(action)
   -- Flags default to true on creation, and are only saved in wagon_data if they should be false
   -- But setting flags to nil is same as setting false, so only assign false if wagon_data entry is not nil
   if wagon_data.minable == false then vehicle.minable = false end
-  if wagon_data.destructible == false then vehicle.destructible =false end
+  if wagon_data.destructible == false then vehicle.destructible = false end
   if wagon_data.operable == false then vehicle.operable = false end
   if wagon_data.rotatable == false then vehicle.rotatable = false end
   if wagon_data.enable_logistics_while_moving == false then
@@ -148,7 +144,7 @@ function unloadVehicleWagon(action)
   end
   
   -- Restore equipment grid
-  local r2 = saveRestoreLib.restoreGrid(vehicle.grid, wagon_data.grid, player_index)
+  local r2 = saveRestoreLib.restoreGrid(vehicle.grid, wagon_data.grid)
   r1 = saveRestoreLib.mergeStackLists(r1, r2)
   
   -- Restore ammo inventory if this car has guns
