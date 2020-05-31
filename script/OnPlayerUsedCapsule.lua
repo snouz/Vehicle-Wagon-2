@@ -198,10 +198,59 @@ local function OnPlayerUsedCapsule(event)
         -- Clicked on an empty wagon without first clicking on a vehicle
         player.print({"vehicle-wagon2.no-vehicle-selected"})
       end
-
+      
+    ---------------------------------------------
+    -- Loading platform: Check if we can unload here and in this direction
+    elseif selected_entity and selected_entity.name == "loading-platform" then
+      -- Clicked on a loading platform, try to unload
+      local platform = selected_entity
+      
+      if not global.player_selection[index] or not global.player_selection[index].wagon then
+        player.print({"vehicle-wagon2.platform-no-wagon-selected"})
+      else
+        local wagon = global.player_selection[index].wagon
+        local unit_number = wagon.unit_number
+        local unload_position = player.surface.find_non_colliding_position(global.wagon_data[unit_number].name, platform.position, 5, 0.5)
+        local unload_distance = distToWagon(wagon, unload_position)
+        
+        local vehicle_prototype = game.entity_prototypes[global.wagon_data[unit_number].name]
+        local min_distance = vehicle_prototype.radius + math.abs(wagon.prototype.collision_box.right_bottom.x)
+        local max_distance = vehicle_prototype.radius + PLATFORM_UNLOAD_RANGE
+      
+    
+        
+        if global.action_queue[unit_number] then
+          -- This wagon already has a pending action
+          player.print({"vehicle-wagon2.loaded-wagon-busy-error"})
+        elseif not unload_position then
+          player.print({"vehicle-wagon2.vehicle-not-created-error", {"entity-name."..global.wagon_data[unit_number].name}})  -- Game could not find open position to unload
+        elseif click_distance > max_distance then
+          player.print({"vehicle-wagon2.platform-too-far-away-error", wagon.localised_name})  -- Player clicked too far away
+        elseif click_distance < min_distance then
+          player.print({"vehicle-wagon2.platform-too-close-error", wagon.localised_name})  -- Player clicked too close
+        else
+          -- Manually unload the wagon
+          -- Vehicle will be oriented radially outward from the center of the wagon
+          local unload_orientation = platform.orientation
+          player.surface.play_sound({path = "winch-sound", position = wagon.position})
+          global.action_queue[unit_number] = {
+              player_index = index,
+              status = "unload",
+              wagon = wagon,
+              unload_position = unload_position,
+              unload_orientation = unload_orientation,
+              tick = game.tick + UNLOADING_EFFECT_TIME,
+              beam = renderUnloadingRamp(wagon, unload_position, vehicle_prototype.radius)
+          }
+          clearSelection(index)
+          script.on_event(defines.events.on_tick, process_tick)
+        end
+      end
+    
+    
     ---------------------------------------------
     -- Someplace Else: Check if valid to unlod selected loaded wagon
-    elseif (global.player_selection[index] and global.player_selection[index].wagon) then
+    elseif global.player_selection[index] and global.player_selection[index].wagon then
       -- Clicked on the ground or unrelated entity after clicking on a loaded wagon
       local wagon = global.player_selection[index].wagon
       local unit_number = wagon.unit_number

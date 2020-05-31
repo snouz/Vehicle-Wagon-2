@@ -25,7 +25,7 @@ data:extend({
       },
       {
         type = "unlock-recipe",
-        recipe = "loading-ramp"
+        recipe = "loading-platform"
       },
     },
     prerequisites = {"automated-rail-transportation"},

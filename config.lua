@@ -17,3 +17,5 @@ EXTRA_RAMP_TIME = 20
 BED_CENTER_OFFSET = -0.6  -- Y offset of center of flatbed used to position icons and loading ramp graphics
 BED_WIDTH = 0.475  -- Half-Width of flatbed used to position loading ramp graphics
 MIN_LOADING_RAMP_LENGTH = 1 -- Don't squish the belt so much when right on top of the wagon
+
+PLATFORM_UNLOAD_DISTANCE = 2.5  -- Distance from wagon center to loading dock center

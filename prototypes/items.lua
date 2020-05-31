@@ -3,16 +3,9 @@
  * File: items.lua
  * Description:  Add item prototypes.
  *   Items added:
- *    - Vehicle Wagon (empty)
- *    - Loaded Vehicle Wagon (Car)
- *    - Loaded Vehicle Wagon (Tank)
- *    - Loaded Vehicle Wagon (Tarp)
  *    - Winch (capsule)
- *    - Loaded Vehicle Wagon (Truck)
- *    - Loaded Vehicle Wagon (Cargo Plane)
- *    - Loaded Vehicle Wagon (Gunship)
- *    - Loaded Vehicle Wagon (Jet)
- *    - Loading Ramp
+ *    - Vehicle Wagon (empty)
+ *    - Loading Platform
 --]]
 
 
@@ -78,12 +71,12 @@ data:extend{
 	},
   {
     type = "item",
-    name = "loading-ramp",
+    name = "loading-platform",
     icon = "__VehicleWagon2__/graphics/tech-icon.png",
     icon_size = 128,
 		subgroup = "transport",
-		order = "a[train-system]-v[vehicle-wagon-ramp]",
-		place_result = "loading-ramp",
+		order = "a[train-system]-v[vehicle-wagon-platform]",
+		place_result = "loading-platform",
 		stack_size = 10
   },
 }

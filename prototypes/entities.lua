@@ -7,7 +7,7 @@
  *    - Loaded Vehicle Wagon (Car)
  *    - Loaded Vehicle Wagon (Tank)
  *    - Loaded Vehicle Wagon (Tarp)
- *    - Loading Ramp
+ *    - Loading Platform
 --]]
 
 
@@ -245,22 +245,22 @@ data:extend{loaded_car, makeDummyItem(loaded_car.name),
             loaded_tarp, makeDummyItem(loaded_tarp.name)}
 
 
--- Make the loading ramp
-local loading_ramp = util.table.deepcopy(data.raw["constant-combinator"]["constant-combinator"])
+-- Make the loading platform
+local platform = util.table.deepcopy(data.raw["constant-combinator"]["constant-combinator"])
 local assembler = data.raw["assembling-machine"]["assembling-machine-1"]
 -- Make it a 3x3 entity
-loading_ramp.name = "loading-ramp"
-loading_ramp.minable = {mining_time = 1, result = "loading-ramp"}
-loading_ramp.corpse = "medium-remnants"
-loading_ramp.collision_box = {{-1.2, -1.2}, {1.2, 1.2}}
-loading_ramp.selection_box = {{-1.5, -1.5}, {1.5, 1.5}}
-loading_ramp.drawing_box = {{-1.5, -1.7}, {1.5, 1.5}}
-loading_ramp.collision_mask = {"water-tile"}
-for _,sprite in pairs(loading_ramp.sprites) do
+platform.name = "loading-platform"
+platform.minable = {mining_time = 1, result = "loading-platform"}
+platform.corpse = "medium-remnants"
+platform.collision_box = {{-1.2, -1.2}, {1.2, 1.2}}
+platform.selection_box = {{-1.5, -1.5}, {1.5, 1.5}}
+platform.drawing_box = {{-1.5, -1.7}, {1.5, 1.5}}
+platform.collision_mask = {"water-tile"}
+for _,sprite in pairs(platform.sprites) do
   for _,layer in pairs(sprite.layers) do
     layer.scale = layer.scale * 3
     layer.hr_version.scale = layer.hr_version.scale * 3
   end
 end
 
-data:extend{loading_ramp}
+data:extend{platform}

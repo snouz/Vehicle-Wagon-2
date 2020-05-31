@@ -5,7 +5,7 @@
  *   Recipes added:
  *    - Vehicle Wagon (empty)
  *    - Winch (capsule)
- *    - Loading Ramp
+ *    - Loading Platform
 --]]
 
 
@@ -37,7 +37,7 @@ data:extend{
   },
   {
     type = "recipe",
-    name = "loading-ramp",
+    name = "loading-platform",
     enabled = "false",
     ingredients =
     {
@@ -46,6 +46,6 @@ data:extend{
       {"iron-plate", 10},
     },
     result_count = 1,
-    result = "loading-ramp"
+    result = "loading-platform"
   }
 }
