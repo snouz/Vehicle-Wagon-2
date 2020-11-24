@@ -12,6 +12,8 @@
 local SPIDER_TRUNK = 2
 local SPIDER_AMMO = 3
 
+local SURFACE_NAME = "vehicle-wagon-storage"
+
 -------------------------
 -- Load Wagon
 function loadVehicleWagon(action)
@@ -50,6 +52,44 @@ function loadVehicleWagon(action)
   
   -- Save reference to loaded wagon entity
   saveData.wagon = loaded_wagon
+  
+  -- Save reference to loaded vehicle
+  saveData.vehicle = vehicle
+  
+  -- Teleport vehicle to storage surface
+  local vwsurf = game.get_surface(SURFACE_NAME)
+  if vwsurf == nil then
+    vwsurf = game.create_surface(SURFACE_NAME, {
+        terrain_segmentation = 1,
+        water = 0,
+        autoplace_controls = {},
+        default_enable_all_autoplace_controls = false,
+        autoplace_settings = {"tile" = {treat_missing_as_default=false, settings={"refined-concrete"={frequency=2,size=2,richness=2}}}},
+        cliff_settings = nil,
+        seed = 0,
+        width = 1000,
+        height = 1000,
+        starting_area = 0,
+        starting_points = {},
+        peaceful_mode = true,
+        property_expression_names = {}
+      }
+    )
+  end
+  
+  local target_pos = vwsurf.find_non_colliding_position(vehicle.name, {0,0}, 1000, 1)
+  if not target_pos then
+    game.print("Oops, couldn't find position in storage realm")
+    return
+  end
+  if not vehicle.teleport(target_pos, vwsurf) then
+    game.print("Oops, couldn't teleport vehicle into storage")
+    return
+  end
+  
+  
+  
+  --[[
   
   -- Store vehicle parameters
   saveData.name = vehicle.name
@@ -109,6 +149,8 @@ function loadVehicleWagon(action)
       end
     end
   end
+  
+  --]]
   
   -- Put an icon on the wagon showing contents
   saveData.icon = renderIcon(loaded_wagon, vehicle.name)

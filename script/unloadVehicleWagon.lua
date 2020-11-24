@@ -59,9 +59,19 @@ function unloadVehicleWagon(action)
     return
   end
   
+  if not wagon_data.vehicle or not wagon_data.vehicle.valid then
+    if player then
+      player.print({"vehicle-wagon2.stored-vehicle-error", loaded_unit_number})
+    else
+      game.print({"vehicle-wagon2.stored-vehicle-error", loaded_unit_number})
+    end
+    return
+  end
+  
   -- Store wagon details for replacement
   local surface = loaded_wagon.surface
   local wagon_position = loaded_wagon.position
+  local vehicle = wagon_data.vehicle
   
   -- Ask game to verify the requested unload position
   if unload_position then
@@ -100,6 +110,17 @@ function unloadVehicleWagon(action)
   direction = math.fmod(direction, 8)
   
   
+  -- Teleport vehicle back from storage surface
+  if not vehicle.teleport(unload_position, surface) then
+    game.print("Oops, couldn't teleport vehicle back from storage")
+    return
+  end
+  
+  -- Set the orientation (this is where we can use the original floating point value
+  vehicle.orientation = unload_orientation
+  
+  
+  --[[
   -- Create the vehicle
   local vehicle = surface.create_entity{
                       name = wagon_data.name,
@@ -210,6 +231,8 @@ function unloadVehicleWagon(action)
       GCKI_data = wagon_data.GCKI_data  -- Custom parameter used by GCKI
     }
   )
+  
+  --]]
   
   -- Play sound associated with creating the vehicle
   surface.play_sound({path = "utility/build_medium", position = unload_position, volume_modifier = 0.7})
