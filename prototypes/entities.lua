@@ -10,19 +10,55 @@
 --]]
 
 local base_wagon_layer = {
-  priority = "very-low",
-  width = 256,
-  height = 256,
+  size = 256,
   direction_count = 128,
-  filenames =
-  {
+  filenames = {
     "__VehicleWagon2__/graphics/entity/base_wagon/cargo_fb_sheet.png",
     "__VehicleWagon2__/graphics/entity/base_wagon/cargo_fb_sheet.png"
   },
   line_length = 8,
   lines_per_file = 8,
-  shift = util.by_pixel(13, -38.5),
+  shift = util.by_pixel(13, -38),
+  hr_version = {
+    size = 512,
+    scale = 0.5,
+    direction_count = 128,
+    filenames = {
+      "__VehicleWagon2__/graphics/entity/base_wagon/hr-cargo_fb_sheet.png",
+      "__VehicleWagon2__/graphics/entity/base_wagon/hr-cargo_fb_sheet.png"
+    },
+    line_length = 8,
+    lines_per_file = 8,
+    shift = util.by_pixel(13, -38.5),
+  }
 }
+
+local base_wagon_layer_shadow = {
+  size = 256,
+  direction_count = 128,
+  filenames = {
+    "__VehicleWagon2__/graphics/entity/base_wagon/cargo_fb_sheet-shadow.png",
+    "__VehicleWagon2__/graphics/entity/base_wagon/cargo_fb_sheet-shadow.png"
+  },
+  line_length = 8,
+  lines_per_file = 8,
+  shift = util.by_pixel(13, -38),
+  draw_as_shadow = true,
+  hr_version = {
+    size = 512,
+    scale = 0.5,
+    direction_count = 128,
+    filenames = {
+      "__VehicleWagon2__/graphics/entity/base_wagon/hr-cargo_fb_sheet-shadow.png",
+      "__VehicleWagon2__/graphics/entity/base_wagon/hr-cargo_fb_sheet-shadow.png"
+    },
+    line_length = 8,
+    lines_per_file = 8,
+    shift = util.by_pixel(13, -38.5),
+    draw_as_shadow = true,
+  }
+}
+
 
 local useWeights = settings.startup["vehicle-wagon-use-custom-weights"].value
 local maxWeight = (useWeights and settings.startup["vehicle-wagon-maximum-weight"].value) or math.huge
@@ -40,6 +76,7 @@ vehicle_wagon.pictures =
 	layers =
 	{
 		base_wagon_layer,
+        base_wagon_layer_shadow,
 	}
 }
 data:extend{vehicle_wagon}
@@ -52,6 +89,7 @@ loaded_car.pictures =
 	layers =
 	{
 		base_wagon_layer,
+        base_wagon_layer_shadow,
 		{
 			width = 114,
 			height = 76,
@@ -105,6 +143,7 @@ loaded_tarp.pictures =
 	layers =
 	{
 		base_wagon_layer,
+        base_wagon_layer_shadow,
 		{
 			width = 192,
 			height = 192,
@@ -113,13 +152,11 @@ loaded_tarp.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-1.png",
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-2.png",
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-3.png",
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-4.png"
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow.png",
 			},
 			line_length = 8,
-			lines_per_file = 5,
+			lines_per_file = 8,
 		},
 		{
 			width = 192,
@@ -129,13 +166,11 @@ loaded_tarp.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-1.png",
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-2.png",
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-3.png",
-				"__VehicleWagon2__/graphics/entity/tarp/tarp-4.png"
+				"__VehicleWagon2__/graphics/entity/tarp/tarp.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp.png",
 			},
 			line_length = 8,
-			lines_per_file = 5,
+			lines_per_file = 8,
 		}
 	}
 }
@@ -148,6 +183,7 @@ loaded_tank.pictures =
 	layers =
 	{
 		base_wagon_layer,
+        base_wagon_layer_shadow,
 		{
 			width = 154,
 			height = 99,

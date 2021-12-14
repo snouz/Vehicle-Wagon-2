@@ -9,8 +9,8 @@ function makeDummyItem(name)
   return {
       type = "item",
       name = name,
-      icon = "__VehicleWagon2__/graphics/tech-icon.png",
-      icon_size = 128,
+      icon = "__VehicleWagon2__/graphics/icons/vehicle-wagon-icon.png",
+      icon_size = 64,
       flags = {"hidden"},
       subgroup = "transport",
       order = "a[train-system]-z[vehicle-wagon]",
