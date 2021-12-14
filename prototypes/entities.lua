@@ -9,16 +9,28 @@
  *    - Loaded Vehicle Wagon (Tarp)
 --]]
 
-
+local base_wagon_layer = {
+  priority = "very-low",
+  width = 256,
+  height = 256,
+  direction_count = 128,
+  filenames =
+  {
+    "__VehicleWagon2__/graphics/entity/base_wagon/cargo_fb_sheet.png",
+    "__VehicleWagon2__/graphics/entity/base_wagon/cargo_fb_sheet.png"
+  },
+  line_length = 8,
+  lines_per_file = 8,
+  shift = util.by_pixel(13, -38.5),
+}
 
 local useWeights = settings.startup["vehicle-wagon-use-custom-weights"].value
 local maxWeight = (useWeights and settings.startup["vehicle-wagon-maximum-weight"].value) or math.huge
 
 local vehicle_wagon = util.table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 vehicle_wagon.name = "vehicle-wagon"
-vehicle_wagon.icon = "__VehicleWagon2__/graphics/vehicle-wagon-icon.png"
-vehicle_wagon.icon_size = 32
-vehicle_wagon.icon_mipmaps = 1
+vehicle_wagon.icon = "__VehicleWagon2__/graphics/icons/vehicle-wagon-icon.png"
+vehicle_wagon.icon_size = 64
 vehicle_wagon.inventory_size = 0
 vehicle_wagon.minable = {mining_time = 1, result = "vehicle-wagon"}
 vehicle_wagon.horizontal_doors = nil
@@ -27,20 +39,7 @@ vehicle_wagon.pictures =
 {
 	layers =
 	{
-		{
-			priority = "very-low",
-			width = 256,
-			height = 256,
-			direction_count = 128,
-			filenames =
-			{
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png",
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png"
-			},
-			line_length = 8,
-			lines_per_file = 8,
-			shift={0.4, -1.20}
-		}
+		base_wagon_layer,
 	}
 }
 data:extend{vehicle_wagon}
@@ -52,20 +51,7 @@ loaded_car.pictures =
 {
 	layers =
 	{
-		{
-			priority = "very-low",
-			width = 256,
-			height = 256,
-			direction_count = 128,
-			filenames =
-			{
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png",
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png"
-			},
-			line_length = 8,
-			lines_per_file = 8,
-			shift={0.4, -1.20}
-		},
+		base_wagon_layer,
 		{
 			width = 114,
 			height = 76,
@@ -74,9 +60,9 @@ loaded_car.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/car/car-shadow-1.png",
-				"__VehicleWagon2__/graphics/car/car-shadow-2.png",
-				"__VehicleWagon2__/graphics/car/car-shadow-3.png"
+				"__VehicleWagon2__/graphics/entity/car/car-shadow-1.png",
+				"__VehicleWagon2__/graphics/entity/car/car-shadow-2.png",
+				"__VehicleWagon2__/graphics/entity/car/car-shadow-3.png"
 			},
 			line_length = 2,
 			lines_per_file = 22,
@@ -104,7 +90,7 @@ loaded_car.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/car/turret.png",
+				"__VehicleWagon2__/graphics/entity/car/turret.png",
 			},
 			line_length = 2,
 			lines_per_file = 64,
@@ -118,20 +104,7 @@ loaded_tarp.pictures =
 {
 	layers =
 	{
-		{
-			priority = "very-low",
-			width = 256,
-			height = 256,
-			direction_count = 128,
-			filenames =
-			{
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png",
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png"
-			},
-			line_length = 8,
-			lines_per_file = 8,
-			shift={0.4, -1.20}
-		},
+		base_wagon_layer,
 		{
 			width = 192,
 			height = 192,
@@ -140,10 +113,10 @@ loaded_tarp.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/tarp/tarp-shadow-1.png",
-				"__VehicleWagon2__/graphics/tarp/tarp-shadow-2.png",
-				"__VehicleWagon2__/graphics/tarp/tarp-shadow-3.png",
-				"__VehicleWagon2__/graphics/tarp/tarp-shadow-4.png"
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-1.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-2.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-3.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-shadow-4.png"
 			},
 			line_length = 8,
 			lines_per_file = 5,
@@ -156,10 +129,10 @@ loaded_tarp.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/tarp/tarp-1.png",
-				"__VehicleWagon2__/graphics/tarp/tarp-2.png",
-				"__VehicleWagon2__/graphics/tarp/tarp-3.png",
-				"__VehicleWagon2__/graphics/tarp/tarp-4.png"
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-1.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-2.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-3.png",
+				"__VehicleWagon2__/graphics/entity/tarp/tarp-4.png"
 			},
 			line_length = 8,
 			lines_per_file = 5,
@@ -170,24 +143,11 @@ loaded_tarp.pictures =
 
 local loaded_tank = util.table.deepcopy(vehicle_wagon)
 loaded_tank.name = "loaded-vehicle-wagon-tank"
-loaded_tank.pictures = 
+loaded_tank.pictures =
 {
 	layers =
 	{
-		{
-			priority = "very-low",
-			width = 256,
-			height = 256,
-			direction_count = 128,
-			filenames =
-			{
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png",
-				"__VehicleWagon2__/graphics/cargo_fb_sheet.png"
-			},
-			line_length = 8,
-			lines_per_file = 8,
-			shift={0.4, -1.20}
-		},
+		base_wagon_layer,
 		{
 			width = 154,
 			height = 99,
@@ -196,10 +156,10 @@ loaded_tank.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/tank/base-shadow-1.png",
-				"__VehicleWagon2__/graphics/tank/base-shadow-2.png",
-				"__VehicleWagon2__/graphics/tank/base-shadow-3.png",
-				"__VehicleWagon2__/graphics/tank/base-shadow-4.png"
+				"__VehicleWagon2__/graphics/entity/tank/base-shadow-1.png",
+				"__VehicleWagon2__/graphics/entity/tank/base-shadow-2.png",
+				"__VehicleWagon2__/graphics/entity/tank/base-shadow-3.png",
+				"__VehicleWagon2__/graphics/entity/tank/base-shadow-4.png"
 			},
 			line_length = 2,
 			lines_per_file = 16,
@@ -212,10 +172,10 @@ loaded_tank.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/tank/base-1.png",
-				"__VehicleWagon2__/graphics/tank/base-2.png",
-				"__VehicleWagon2__/graphics/tank/base-3.png",
-				"__VehicleWagon2__/graphics/tank/base-4.png"
+				"__VehicleWagon2__/graphics/entity/tank/base-1.png",
+				"__VehicleWagon2__/graphics/entity/tank/base-2.png",
+				"__VehicleWagon2__/graphics/entity/tank/base-3.png",
+				"__VehicleWagon2__/graphics/entity/tank/base-4.png"
 			},
 			line_length = 2,
 			lines_per_file = 16,
@@ -228,10 +188,10 @@ loaded_tank.pictures =
 			scale = 0.95,
 			filenames =
 			{
-				"__VehicleWagon2__/graphics/tank/turret-1.png",
-				"__VehicleWagon2__/graphics/tank/turret-2.png",
-				"__VehicleWagon2__/graphics/tank/turret-3.png",
-				"__VehicleWagon2__/graphics/tank/turret-4.png"
+				"__VehicleWagon2__/graphics/entity/tank/turret-1.png",
+				"__VehicleWagon2__/graphics/entity/tank/turret-2.png",
+				"__VehicleWagon2__/graphics/entity/tank/turret-3.png",
+				"__VehicleWagon2__/graphics/entity/tank/turret-4.png"
 			},
 			line_length = 2,
 			lines_per_file = 16,
@@ -239,7 +199,7 @@ loaded_tank.pictures =
 	}
 }
 -- Car, Tank, and Tarp need to be loaded regardless of weight limit
-data:extend{loaded_car, makeDummyItem(loaded_car.name), 
-            loaded_tank, makeDummyItem(loaded_tank.name), 
+data:extend{loaded_car, makeDummyItem(loaded_car.name),
+            loaded_tank, makeDummyItem(loaded_tank.name),
             loaded_tarp, makeDummyItem(loaded_tarp.name)}
 

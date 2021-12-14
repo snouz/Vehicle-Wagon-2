@@ -8,10 +8,10 @@ data:extend{
   {
     type = "sprite",
     name = "vw2-bg-icon",
-    filename = "__VehicleWagon2__/graphics/bg_icon.png",
+    filename = "__VehicleWagon2__/graphics/icons/bg_icon.png",
     priority = "low",
     size = 50,
-    mipmap_count=1,
+    mipmap_count = 0,
     flags = {"icon"}
   }
 }

@@ -21,6 +21,22 @@ local vehicle_wagon = data.raw["cargo-wagon"]["vehicle-wagon"]
 local loaded_tank = data.raw["cargo-wagon"]["loaded-vehicle-wagon-tank"]
 local loaded_vehicle_wagon_tarp = data.raw["cargo-wagon"]["loaded-vehicle-wagon-tarp"]
 
+local base_wagon_layer = {
+  priority = "very-low",
+  width = 256,
+  height = 256,
+  direction_count = 128,
+  filenames =
+  {
+    "__VehicleWagon2__/graphics/cargo_fb_sheet.png",
+    "__VehicleWagon2__/graphics/cargo_fb_sheet.png"
+  },
+  line_length = 8,
+  lines_per_file = 8,
+  shift = {0.4, -1.20}
+}
+
+
 if mods["bigtruck"] then
   if data.raw.car["dumper-truck"] and data.raw.car["dumper-truck"].weight <= maxWeight then
     local loaded_truck = util.table.deepcopy(vehicle_wagon)
@@ -29,20 +45,7 @@ if mods["bigtruck"] then
     {
       layers =
       {
-        {
-          priority = "very-low",
-          width = 256,
-          height = 256,
-          direction_count = 128,
-          filenames =
-          {
-            "__VehicleWagon2__/graphics/cargo_fb_sheet.png",
-            "__VehicleWagon2__/graphics/cargo_fb_sheet.png"
-          },
-          line_length = 8,
-          lines_per_file = 8,
-          shift={0.4, -1.20}
-        },
+        base_wagon_layer,
         {
           width = 192,
           height = 192,
@@ -51,10 +54,10 @@ if mods["bigtruck"] then
           scale = 0.95,
           filenames =
           {
-            "__VehicleWagon2__/graphics/truck/truck-shadow-1.png",
-            "__VehicleWagon2__/graphics/truck/truck-shadow-2.png",
-            "__VehicleWagon2__/graphics/truck/truck-shadow-3.png",
-            "__VehicleWagon2__/graphics/truck/truck-shadow-4.png"
+            "__VehicleWagon2__/graphics/entity/truck/truck-shadow-1.png",
+            "__VehicleWagon2__/graphics/entity/truck/truck-shadow-2.png",
+            "__VehicleWagon2__/graphics/entity/truck/truck-shadow-3.png",
+            "__VehicleWagon2__/graphics/entity/truck/truck-shadow-4.png"
           },
           line_length = 8,
           lines_per_file = 5,
@@ -67,10 +70,10 @@ if mods["bigtruck"] then
           scale = 0.95,
           filenames =
           {
-            "__VehicleWagon2__/graphics/truck/truck-1.png",
-            "__VehicleWagon2__/graphics/truck/truck-2.png",
-            "__VehicleWagon2__/graphics/truck/truck-3.png",
-            "__VehicleWagon2__/graphics/truck/truck-4.png"
+            "__VehicleWagon2__/graphics/entity/truck/truck-1.png",
+            "__VehicleWagon2__/graphics/entity/truck/truck-2.png",
+            "__VehicleWagon2__/graphics/entity/truck/truck-3.png",
+            "__VehicleWagon2__/graphics/entity/truck/truck-4.png"
           },
           line_length = 8,
           lines_per_file = 5,
@@ -103,8 +106,8 @@ if mods["Aircraft"] then
           direction_count = 128,
           filenames =
           {
-            "__VehicleWagon2__/graphics/cargoplane/flyer3onr_sheet-0.png",
-            "__VehicleWagon2__/graphics/cargoplane/flyer3onr_sheet-1.png"
+            "__VehicleWagon2__/graphics/entity/cargoplane/flyer3onr_sheet-0.png",
+            "__VehicleWagon2__/graphics/entity/cargoplane/flyer3onr_sheet-1.png"
           },
           line_length = 8,
           lines_per_file = 8,
@@ -114,7 +117,7 @@ if mods["Aircraft"] then
     }
     data:extend{loaded_cargo_plane, makeDummyItem(loaded_cargo_plane.name)}
   end
-  
+
   if data.raw.car["jet"] and data.raw.car["jet"].weight <= maxWeight then
     local loaded_jet = util.table.deepcopy(vehicle_wagon)
     loaded_jet.name = "loaded-vehicle-wagon-jet"
@@ -129,8 +132,8 @@ if mods["Aircraft"] then
           direction_count = 128,
           filenames =
           {
-            "__VehicleWagon2__/graphics/jet/flyer2onr_sheet-0.png",
-            "__VehicleWagon2__/graphics/jet/flyer2onr_sheet-1.png"
+            "__VehicleWagon2__/graphics/entity/jet/flyer2onr_sheet-0.png",
+            "__VehicleWagon2__/graphics/entity/jet/flyer2onr_sheet-1.png"
           },
           line_length = 8,
           lines_per_file = 8,
@@ -155,8 +158,8 @@ if mods["Aircraft"] then
           direction_count = 128,
           filenames =
           {
-            "__VehicleWagon2__/graphics/gunship/flyer1onr_sheet-0b.png",
-            "__VehicleWagon2__/graphics/gunship/flyer1onr_sheet-1b.png"
+            "__VehicleWagon2__/graphics/entity/gunship/flyer1onr_sheet-0b.png",
+            "__VehicleWagon2__/graphics/entity/gunship/flyer1onr_sheet-1b.png"
           },
           line_length = 8,
           lines_per_file = 8,
@@ -173,11 +176,11 @@ elseif compatibilityEntities then
   local loaded_cargo_plane = util.table.deepcopy(loaded_vehicle_wagon_tarp)
   loaded_cargo_plane.name = "loaded-vehicle-wagon-cargoplane"
   data:extend{loaded_cargo_plane, makeDummyItem(loaded_cargo_plane.name)}
-  
+
   local loaded_jet = util.table.deepcopy(loaded_vehicle_wagon_tarp)
   loaded_jet.name = "loaded-vehicle-wagon-jet"
   data:extend{loaded_jet, makeDummyItem(loaded_jet.name)}
-  
+
   local loaded_gunship = util.table.deepcopy(loaded_vehicle_wagon_tarp)
   loaded_gunship.name = "loaded-vehicle-wagon-gunship"
   data:extend{loaded_gunship, makeDummyItem(loaded_gunship.name)}
@@ -198,7 +201,7 @@ if mods["SchallTankPlatoon"] then
     data:extend{loaded_tank_L, makeDummyItem(loaded_tank_L.name)}
   end
 
-  
+
   -- Heavy tank is bigger and heavier
   if data.raw.car["Schall-tank-H"] and data.raw.car["Schall-tank-H"].weight <= maxWeight then
     local loaded_tank_H = util.table.deepcopy(loaded_tank)
@@ -211,7 +214,7 @@ if mods["SchallTankPlatoon"] then
     data:extend{loaded_tank_H, makeDummyItem(loaded_tank_H.name)}
   end
 
-  
+
   -- Super Heavy tank is just comically big
   if data.raw.car["Schall-tank-SH"] and data.raw.car["Schall-tank-SH"].weight <= maxWeight then
     local loaded_tank_SH = util.table.deepcopy(loaded_tank)
@@ -229,11 +232,11 @@ elseif compatibilityEntities then
   local loaded_tank_L = util.table.deepcopy(loaded_vehicle_wagon_tarp)
   loaded_tank_L.name = "loaded-vehicle-wagon-tank-L"
   data:extend{loaded_tank_L, makeDummyItem(loaded_tank_L.name)}
-  
+
   local loaded_tank_H = util.table.deepcopy(loaded_vehicle_wagon_tarp)
   loaded_tank_H.name = "loaded-vehicle-wagon-tank-H"
   data:extend{loaded_tank_H, makeDummyItem(loaded_tank_H.name)}
-  
+
   local loaded_tank_SH = util.table.deepcopy(loaded_vehicle_wagon_tarp)
   loaded_tank_SH.name = "loaded-vehicle-wagon-tank-SH"
   data:extend{loaded_tank_SH, makeDummyItem(loaded_tank_SH.name)}
@@ -247,31 +250,18 @@ if mods["Krastorio2"] then
   if data.raw.car["kr-advanced-tank"] and data.raw.car["kr-advanced-tank"].weight <= maxWeight then
     local loaded_advanced_tank = util.table.deepcopy(vehicle_wagon)
     loaded_advanced_tank.name = "loaded-vehicle-wagon-kr-advanced-tank"
-    loaded_advanced_tank.pictures = 
+    loaded_advanced_tank.pictures =
     {
       layers =
       {
-        {
-          priority = "very-low",
-          width = 256,
-          height = 256,
-          direction_count = 128,
-          filenames =
-          {
-            "__VehicleWagon2__/graphics/cargo_fb_sheet.png",
-            "__VehicleWagon2__/graphics/cargo_fb_sheet.png"
-          },
-          line_length = 8,
-          lines_per_file = 8,
-          shift={0.4, -1.20}
-        },
+        base_wagon_layer,
         {
           width = 208,
           height = 208,
           direction_count = 128,
           shift = {0, -0.5},
           scale = 0.95,
-          filenames = 
+          filenames =
           {
             kr_entities_path .. "advanced-tank/advanced-tank-base.png"
           },
@@ -284,7 +274,7 @@ if mods["Krastorio2"] then
           direction_count = 128,
           shift = {0, -0.5},
           scale = 0.95,
-          filenames = 
+          filenames =
           {
             kr_entities_path .. "advanced-tank/advanced-tank-turret.png"
           },
@@ -318,7 +308,7 @@ if mods["Krastorio2"] then
           line_length = 16,
           shift = {0.75, 0.25},
           scale = 0.95,
-          stripes = 
+          stripes =
           {
             {
               filename = kr_entities_path .. "advanced-tank/advanced-tank-turret-shadow.png",
@@ -348,10 +338,10 @@ if mods["Krastorio2"] then
         }--]]
       }
     }
-  
+
     data:extend{loaded_advanced_tank, makeDummyItem(loaded_advanced_tank.name)}
   end
-  
+
 elseif compatibilityEntities then
   local loaded_advanced_tank = util.table.deepcopy(loaded_vehicle_wagon_tarp)
   loaded_advanced_tank.name = "loaded-vehicle-wagon-kr-advanced-tank"

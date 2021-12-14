@@ -19,13 +19,13 @@ data:extend{
   {
 		type = "selection-tool",
 		name = "winch",
-		icon = "__VehicleWagon2__/graphics/winch-icon.png",
+		icon = "__VehicleWagon2__/graphics/icons/winch-icon.png",
 		icon_size = 64,
     mipmaps = 1,
 		subgroup = "transport",
 		order = "a[train-system]-w[winch]",
 		stack_size = 1,
-    
+
     --mouse_cursor = "selection-tool-cursor",
     selection_color = {r=0.75, g=0.75},
     alt_selection_color = {g=1},
